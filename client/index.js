@@ -1,18 +1,45 @@
-const WebSocket = require('ws')
-var conn = new WebSocket('wss://clientexample.onrender.com');
-conn.onopen = function(e) {
-    console.log("Connection established!");
-};
-setInterval(() => {
-  conn.send('Hello server!');
-}, 1000);
-conn.onmessage = function(e) {
-    console.log(e.data);
-};
-conn.onclose = function(e) {
-    console.log(e.code);
-    console.log(e.reason);
-};              
-conn.onerror = function(e) {
-    console.log(e);
-};      
+
+import WebSocket from 'ws';
+const serverAddress = 'wss://aia-remote-websocket-server.glitch.me/';
+import FileSaver from 'file-saver';
+import fs from 'fs';
+
+import pkg from 'file-saver';
+const { saveAs } = pkg;
+
+
+
+const ws = new WebSocket(serverAddress, {
+  headers: {
+    "user-agent": "Mozilla"
+  }
+});
+
+ws.on('open', function () {
+  ws.send("Hola  carebola");
+});
+
+ws.on('message', function (msg) {
+  console.log("Received msg from the server: " + msg);
+  if (msg.toString().startsWith("Parametros")) {
+    var array = msg.toString().split(":");
+    var array2 = array[1].split(",");
+    var param1 = array2[0];
+    var param2 = array2[1];
+    var param3 = array2[2];
+    console.log(param3);
+    const content = param1 + "\n" + param2 + "\n" + param3;
+
+    
+
+    var logger = fs.createWriteStream('params.txt', {
+      flags: 'a' 
+    })
+    logger.write(content) 
+    // var blob = new Blob([content], {
+    //   type: "text/plain;charset=utf-8",
+    // });
+    // saveAs(blob, "params.txt");
+    // console.log("guardado");
+  }
+});
