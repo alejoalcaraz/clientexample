@@ -1,3 +1,4 @@
+const WebSocket = require('ws')
 var conn = new WebSocket('wss://clientexample.onrender.com');
 conn.onopen = function(e) {
     console.log("Connection established!");
