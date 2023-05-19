@@ -1,9 +1,7 @@
-
 import WebSocket from 'ws';
 const serverAddress = 'wss://aia-remote-websocket-server.glitch.me/';
 import FileSaver from 'file-saver';
 import fs from 'fs';
-
 import pkg from 'file-saver';
 const { saveAs } = pkg;
 
@@ -30,16 +28,43 @@ ws.on('message', function (msg) {
     console.log(param3);
     const content = param1 + "\n" + param2 + "\n" + param3;
 
-    
+
 
     var logger = fs.createWriteStream('params.txt', {
-      flags: 'a' 
-    })
-    logger.write(content) 
-    // var blob = new Blob([content], {
-    //   type: "text/plain;charset=utf-8",
-    // });
-    // saveAs(blob, "params.txt");
-    // console.log("guardado");
-  }
+      flags: 'a'
+    });
+    logger.write(content);
+
+    var i = 1;
+    function myLoop() {
+      setTimeout(function () {
+
+        const path = './results.txt';
+
+        if (fs.existsSync(path)) {
+          console.log("File exists");
+          try {
+            const data = fs.readFileSync(path, 'utf8');
+            ws.send(data);
+          } catch (err) {
+            console.error(err);
+          }
+          return;
+        }
+        else {
+          console.log("File does not exist")
+        }
+
+        i++;
+        if (i > 0) {
+          myLoop();
+        }
+      }, 3000)
+    };
+    myLoop();
+
+
+
+  };
 });
+
