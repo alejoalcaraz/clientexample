@@ -49,6 +49,13 @@ ws.on('message', function (msg) {
           } catch (err) {
             console.error(err);
           }
+          try {
+            fs.unlinkSync('results.txt');
+          
+            console.log("Delete File successfully.");
+          } catch (error) {
+            console.log(error);
+          }
           return;
         }
         else {
@@ -65,6 +72,12 @@ ws.on('message', function (msg) {
 
 
 
+  }
+  else if(msg.toString().startsWith("Ejecutar")) {
+    var logger = fs.createWriteStream('ejecutar.txt', {
+      flags: 'a'
+    });
+    logger.write("Ejecutar");
   };
 });
 
